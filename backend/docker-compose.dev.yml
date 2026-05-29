@@ -1,0 +1,36 @@
+name: cls-dev
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: cls_postgres_dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: Cls_Db
+    ports:
+      - "5432:5432"
+    volumes:
+      - cls_pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d Cls_Db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio
+    container_name: cls_minio_dev
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: clsadmin
+      MINIO_ROOT_PASSWORD: sHKZTjOdoFCCmthE2dsdZg
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - cls_minio_data_dev:/data
+
+volumes:
+  cls_pgdata_dev:
+  cls_minio_data_dev:

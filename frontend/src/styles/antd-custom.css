@@ -1,0 +1,55 @@
+/* ─────────────────────────────────────────────
+ * CLS — Ant Design Overrides (Light Mode Only)
+ * Most styling handled via theme.ts tokens.
+ * ───────────────────────────────────────────── */
+
+/* ─── Layout ─── */
+.ant-layout {
+  background-color: var(--bg);
+}
+
+/* ─── Table ─── */
+.ant-table-container {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ─── Modal ─── */
+.ant-modal-mask {
+  backdrop-filter: blur(4px);
+}
+.ant-modal-content {
+  box-shadow: var(--shadow-modal);
+}
+
+/* ─── Tabs ─── */
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-accent, #3B82F6);
+}
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
+  background: var(--color-accent, #3B82F6);
+}
+
+/* ─── Upload file list grid ─── */
+.ant-upload-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 24px;
+  row-gap: 8px;
+  margin-top: 8px;
+}
+.ant-upload-list .ant-upload-list-item {
+  margin: 0;
+  padding: 0;
+  height: 22px;
+  overflow: visible;
+}
+.ant-upload-list .ant-upload-list-item-container {
+  height: 22px;
+  width: 100%;
+  max-width: 270px;
+}
+.ant-upload-wrapper .ant-upload-list::before {
+  content: initial;
+}

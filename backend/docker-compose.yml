@@ -1,0 +1,100 @@
+name: cls
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: cls_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - cls_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # Dev convenience: expose to host for psql/pgAdmin. In Stage/Prod, remove or keep commented.
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    restart: unless-stopped
+    networks:
+      - cls_net
+
+  minio:
+    image: minio/minio
+    container_name: cls_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - cls_minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - cls_net
+
+  api:
+    build:
+      context: .
+      dockerfile: src/Cls.Api/Dockerfile
+    container_name: cls_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: "http://+:8080"
+      TZ: ${TZ:-America/Toronto}
+      DOTNET_gcServer: "0"
+
+      # PostgreSQL
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+
+      # JWT
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__Key: ${JWT_KEY}
+
+      # MinIO Object Storage
+      ObjectStorage__Provider: "minio"
+      ObjectStorage__Bucket: ${MINIO_BUCKET}
+      Minio__Endpoint: "minio:9000"
+      Minio__PublicEndpoint: ${MINIO_PUBLIC_ENDPOINT:-localhost:9000}
+      Minio__UseSSL: ${MINIO_USE_SSL:-false}
+      Minio__AccessKey: ${MINIO_ROOT_USER}
+      Minio__SecretKey: ${MINIO_ROOT_PASSWORD}
+
+      # Recaptcha
+      Recaptcha__Enabled: ${RECAPTCHA_ENABLED:-true}
+      Recaptcha__SecretKey: ${RECAPTCHA_SECRET_KEY}
+      Recaptcha__Threshold: ${RECAPTCHA_THRESHOLD:-0.5}
+    ports:
+      - "${API_HOST_PORT:-8080}:8080"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "256M"
+    networks:
+      - cls_net
+
+volumes:
+  cls_pgdata:
+  cls_minio_data:
+
+networks:
+  cls_net:
+    driver: bridge

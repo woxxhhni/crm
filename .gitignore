@@ -1,0 +1,16 @@
+############################
+# CLS Platform — Root .gitignore
+############################
+
+### OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+### IDE
+.idea/
+.vscode/
+*.code-workspace

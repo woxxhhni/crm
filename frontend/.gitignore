@@ -1,0 +1,47 @@
+############################
+# CLS Frontend — .gitignore
+############################
+
+### Dependencies
+/node_modules
+
+### Next.js
+/.next/
+/out/
+/build
+
+### TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+### Environment — NEVER commit secrets
+.env
+.env.*
+!.env.example
+
+### OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.pem
+
+### Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+### Testing / Coverage
+/coverage
+*.lcov
+
+### Docker
+docker-compose.override.yml
+
+### Misc
+.vercel
+.turbo

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Dev": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "Swagger",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:40585",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__Default": "Host=localhost;Port=5432;Database=Cls_Db;Username=postgres;Password=postgres",
+        "Jwt__Issuer": "Cls",
+        "Jwt__Audience": "ClsAudience",
+        "Jwt__Key": "buM7Iy3wpDeRbLBGqKY3YA8Bla7cbMXZ1VXVu8umxzA=",
+        "ObjectStorage__Provider": "minio",
+        "ObjectStorage__Bucket": "cls-temp-bucket",
+        "Minio__Endpoint": "localhost:9000",
+        "Minio__PublicEndpoint": "localhost:9000",
+        "Minio__UseSSL": "false",
+        "Minio__AccessKey": "clsadmin",
+        "Minio__SecretKey": "sHKZTjOdoFCCmthE2dsdZg",
+        "Recaptcha__Enabled": "false",
+        "Recaptcha__SecretKey": "PLACEHOLDER_RECAPTCHA_SECRET_KEY_REPLACE_ME",
+        "Recaptcha__Threshold": "0.5"
+      }
+    }
+  }
+}

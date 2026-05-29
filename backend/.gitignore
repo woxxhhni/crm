@@ -1,0 +1,82 @@
+############################
+# CLS Backend — .gitignore
+############################
+
+### .NET / ASP.NET Core
+**/bin/
+**/obj/
+**/out/
+**/[Rr]elease/
+**/[Dd]ebug/
+artifacts/
+*.pdb
+*.log
+*.efbundle
+/dumps
+**/publish/
+
+### NuGet
+*.nupkg
+**/packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+### Visual Studio / Tooling
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.csproj.user
+.vscode/
+.idea/
+*.opendb
+[Bb]uild[Ll]og.*
+launchSettings.json.bak
+
+### Tests / Coverage
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+.coverage
+
+### OS junk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*.swo
+*~
+
+### Docker
+docker-compose.override.yml
+docker-data/
+volumes/
+
+### MinIO local data
+minio-data/
+**/minio/data/
+**/minio/.minio.sys/
+
+### Database
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+
+### Backups (runtime data)
+**/Backups/
+
+### Environment files — NEVER commit secrets
+.env
+.env.*
+!.env.example
+
+### Logs
+logs/
+*.log

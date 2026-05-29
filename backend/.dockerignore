@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/.vscode/
+**/node_modules/
+**/*.user
+**/*.suo
+**/*.swp
+**/*.DS_Store
+**/*.pfx
+**/*.snk
+**/TestResults/
+**/coverage/
+.env
