@@ -244,6 +244,8 @@
   "logEmployeeAssigned": "已分配员工：{{name}}",
   "logEmployeeAssignedForOrder": "已为订单“{{title}}”分配员工：{{name}}",
   "logEmployeeRemovedFromOrder": "已从订单“{{title}}”移除员工：{{name}}",
+  "reopenOrder": "重新打开订单",
+  "orderReopenedSuccessfully": "订单已恢复为进行中",
   "workflow": {
     "stages": {
       "orderPlacement": "下单阶段",

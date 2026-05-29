@@ -12,6 +12,7 @@ export const OrdersEndpoints = {
     cancel: (orderId: string | number) => `/api/v1/Orders/${orderId}/cancel`,
     suspend: (orderId: string | number) => `/api/v1/Orders/${orderId}/suspend`,
     unsuspend: (orderId: string | number) => `/api/v1/Orders/${orderId}/unsuspend`,
+    reopen: (orderId: string | number) => `/api/v1/Orders/${orderId}/reopen`,
     // Client Payments
     clientPayments: (orderId: string | number) => `/api/v1/Orders/${orderId}/client-payments`,
     clientPaymentById: (orderId: string | number, paymentId: string | number) => `/api/v1/Orders/${orderId}/client-payments/${paymentId}`,

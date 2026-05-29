@@ -180,6 +180,12 @@ export class OrdersRepository {
         });
     }
 
+    async reopenOrder(orderId: string | number, payload: FormData): Promise<void> {
+        await HttpClientInstance.patch(OrdersEndpoints.reopen(orderId), payload, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
     // Notes
     async createNote(orderId: string | number, payload: FormData): Promise<void> {
         await HttpClientInstance.post(OrdersEndpoints.notes(orderId), payload, {

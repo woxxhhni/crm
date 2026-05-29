@@ -26,7 +26,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   orderId: string | number;
-  actionType: 'complete' | 'cancel' | 'suspend' | 'unsuspend' | null;
+  actionType: 'complete' | 'cancel' | 'suspend' | 'unsuspend' | 'reopen' | null;
 }
 
 export default function OrderActionModalComponent({ open, onClose, orderId, actionType }: Props) {
@@ -88,6 +88,9 @@ export default function OrderActionModalComponent({ open, onClose, orderId, acti
         case 'unsuspend':
           await service.unsuspendOrder(orderId, formData);
           break;
+        case 'reopen':
+          await service.reopenOrder(orderId, formData);
+          break;
       }
     },
     onSuccess: async () => {
@@ -96,6 +99,7 @@ export default function OrderActionModalComponent({ open, onClose, orderId, acti
         cancel: t('orderCanceledSuccessfully'),
         suspend: t('orderSuspendedSuccessfully'),
         unsuspend: t('orderUnsuspendedSuccessfully'),
+        reopen: t('orderReopenedSuccessfully'),
       };
       notification.success({ message: actionMessages[actionType!] || t('orderActionSuccessful') });
       onClose();
@@ -105,6 +109,9 @@ export default function OrderActionModalComponent({ open, onClose, orderId, acti
         queryKey: ['order-edit-details', String(orderId)],
         exact: true,
       });
+    },
+    onError: () => {
+      notification.error({ message: t('orderActionFailed') });
     },
   });
 
@@ -122,6 +129,7 @@ export default function OrderActionModalComponent({ open, onClose, orderId, acti
       cancel: t('cancelOrder'),
       suspend: t('suspendOrder'),
       unsuspend: t('unsuspendOrder'),
+      reopen: t('reopenOrder'),
     };
     return titleMap[actionType!] || t('orderAction');
   };

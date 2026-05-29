@@ -170,6 +170,17 @@ public class OrdersController(
         Ok(await ChangeOrderStatusAsync(id, request, fileModel, UploadFileBucket.OrderChangeState,
             (fileIds, removed) => new UnSuspendOrderCommand(id, request.ActionDate, request.Description, fileIds, removed), ct));
 
+    [HttpPatch("{id:int}/reopen")]
+    [ClsAuthorize(Roles = "Admin,Manager")]
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult<int>> ReopenOrder(
+        int id,
+        [FromForm] OrderChangeStatusRequest request,
+        [FromForm] UploadMultipleFileModel? fileModel,
+        CancellationToken ct) =>
+        Ok(await ChangeOrderStatusAsync(id, request, fileModel, UploadFileBucket.OrderChangeState,
+            (fileIds, removed) => new ReopenOrderCommand(id, request.ActionDate, request.Description, fileIds, removed), ct));
+
     [HttpPatch("{id:int}/complete")]
     [ClsAuthorize(Roles = "Admin,Manager")]
     [Consumes("multipart/form-data")]

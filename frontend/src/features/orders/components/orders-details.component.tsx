@@ -6,7 +6,7 @@ import {
   ClockCircleOutlined, DollarOutlined, FileTextOutlined,
   MailOutlined, ShoppingOutlined, TeamOutlined, PlusOutlined,
   CheckCircleOutlined, CloseCircleOutlined, PauseCircleOutlined,
-  PlayCircleOutlined,
+  PlayCircleOutlined, RollbackOutlined,
 } from '@ant-design/icons';
 import LoadingSpinnerComponent from '@/components/loading/loading-spinner.component';
 import { Icon } from '@/components/iconify/iconify.component';
@@ -89,7 +89,7 @@ export default function OrdersDetailsComponent() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteOrderModalOpen, setDeleteOrderModalOpen] = useState(false);
   const [orderActionModalOpen, setOrderActionModalOpen] = useState(false);
-  const [orderActionType, setOrderActionType] = useState<'complete' | 'cancel' | 'suspend' | 'unsuspend' | null>(null);
+  const [orderActionType, setOrderActionType] = useState<'complete' | 'cancel' | 'suspend' | 'unsuspend' | 'reopen' | null>(null);
   const [updatingStageId, setUpdatingStageId] = useState<number | null>(null);
 
   const { notification } = App.useApp();
@@ -169,7 +169,7 @@ export default function OrdersDetailsComponent() {
   });
 
   // Order action handler
-  const handleOrderAction = (actionType: 'complete' | 'cancel' | 'suspend' | 'unsuspend') => {
+  const handleOrderAction = (actionType: 'complete' | 'cancel' | 'suspend' | 'unsuspend' | 'reopen') => {
     setOrderActionType(actionType);
     setOrderActionModalOpen(true);
   };
@@ -368,6 +368,21 @@ export default function OrdersDetailsComponent() {
                     }}
                   >
                     {tCommon('unsuspend')}
+                  </Button>
+                )}
+
+                {canChangeOrderStatus && statusKey === 'completed' && (
+                  <Button
+                    type="primary"
+                    icon={<RollbackOutlined />}
+                    onClick={() => handleOrderAction('reopen')}
+                    style={{
+                      borderRadius: 10, height: 38, paddingInline: 18, fontWeight: 600,
+                      background: '#2563EB', borderColor: '#2563EB',
+                      fontSize: 13,
+                    }}
+                  >
+                    {t('reopenOrder')}
                   </Button>
                 )}
               </div>

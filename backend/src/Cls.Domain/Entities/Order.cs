@@ -173,6 +173,17 @@ public class Order : SoftDeletableEntity
         RemoveStatusFiles(removedFileIds, userId);
     }
 
+    public void Reopen(List<int> fileIds, List<int> removedFileIds, int userId)
+    {
+        if (Status != OrderStatus.Completed) throw new InvalidActionException();
+        Status = OrderStatus.InProgress;
+        CompletedAt = null;
+        CanceledAt = null;
+        SuspendedAt = null;
+        AddStatusFiles(fileIds, userId);
+        RemoveStatusFiles(removedFileIds, userId);
+    }
+
     private void UpdateClientBalance(ClientOrderPayment payment)
     {
         ClientBalance ??= 0;

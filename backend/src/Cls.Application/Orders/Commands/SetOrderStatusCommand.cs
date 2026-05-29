@@ -14,12 +14,14 @@ public record CompleteOrderCommand(int Id, DateTime ActionDate, string? Descript
 public record CancelOrderCommand(int Id, DateTime ActionDate, string? Description, List<int> FileIds, List<int> RemovedFileIds) : IRequest;
 public record SuspendOrderCommand(int Id, DateTime ActionDate, string? Description, List<int> FileIds, List<int> RemovedFileIds) : IRequest;
 public record UnSuspendOrderCommand(int Id, DateTime ActionDate, string? Description, List<int> FileIds, List<int> RemovedFileIds) : IRequest;
+public record ReopenOrderCommand(int Id, DateTime ActionDate, string? Description, List<int> FileIds, List<int> RemovedFileIds) : IRequest;
 
 public class OrderStatusCommandHandler(IUnitOfWork uow, ICurrentUserService currentUserService, IOrderLogService logService)
     : IRequestHandler<CancelOrderCommand>
       , IRequestHandler<CompleteOrderCommand>
       , IRequestHandler<SuspendOrderCommand>
       , IRequestHandler<UnSuspendOrderCommand>
+      , IRequestHandler<ReopenOrderCommand>
 {
     public async Task Handle(CancelOrderCommand request, CancellationToken cancellationToken)
     {
@@ -63,6 +65,33 @@ public class OrderStatusCommandHandler(IUnitOfWork uow, ICurrentUserService curr
     {
         var order = await GetOrder(request.Id, cancellationToken);
         order.UnSuspended(request.FileIds, request.RemovedFileIds, currentUserService.UserId);
+        await uow.Orders.UpdateAsync(order, cancellationToken);
+        await logService.Order.ReturnedToProgress(order, request.ActionDate.ToUniversalTime(), request.Description, cancellationToken);
+        await uow.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task Handle(ReopenOrderCommand request, CancellationToken cancellationToken)
+    {
+        var order = await GetOrder(request.Id, cancellationToken);
+        order.Reopen(request.FileIds, request.RemovedFileIds, currentUserService.UserId);
+
+        var lastStepHistory = await uow.OrderStepHistories.Query()
+            .Where(p => p.OrderId == order.Id)
+            .OrderByDescending(p => p.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (lastStepHistory?.ExitedAt.HasValue == true)
+        {
+            await uow.OrderStepHistories.AddAsync(new OrderStepHistory
+            {
+                OrderId = order.Id,
+                StepId = order.CurrentStepId,
+                EntryType = OrderStepEntryType.Initial,
+                EnteredAt = DateTime.UtcNow,
+                IsDeleted = false
+            }, cancellationToken);
+        }
+
         await uow.Orders.UpdateAsync(order, cancellationToken);
         await logService.Order.ReturnedToProgress(order, request.ActionDate.ToUniversalTime(), request.Description, cancellationToken);
         await uow.SaveChangesAsync(cancellationToken);

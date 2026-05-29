@@ -301,6 +301,10 @@ export class OrdersService {
         await this.repo.unsuspendOrder(orderId, formData);
     }
 
+    async reopenOrder(orderId: string | number, formData: FormData) {
+        await this.repo.reopenOrder(orderId, formData);
+    }
+
     // Notes
     buildNoteFormData(dto: { actionDate: string; title: string; description?: string; files?: File[] }) {
         const formData = new FormData();
